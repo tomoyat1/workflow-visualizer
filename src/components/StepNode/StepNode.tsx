@@ -3,9 +3,9 @@ import {Card} from '@mui/material'
 
 import Box from "@mui/material/Box";
 
-export type StepNodeProps = {
-    name: string,
-    type: string,
+export interface StepNodeProps {
+    name: string
+    type: string
 }
 
 const StepNode: React.FC<StepNodeProps> = ({name, type}) => {
