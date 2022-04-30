@@ -2,6 +2,7 @@ import React from 'react';
 import {Card} from '@mui/material'
 
 import Box from "@mui/material/Box";
+import { positions } from '@mui/system';
 
 export interface StepNodeProps {
     name: string
@@ -10,7 +11,9 @@ export interface StepNodeProps {
 
 const StepNode: React.FC<StepNodeProps> = ({name, type}) => {
     return (
-        <Card sx={{width: 200}}>
+        <Card sx={{
+            width: 200,
+        }}>
             <Box sx={{
                 p: 2,
                 display: 'flex',

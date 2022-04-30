@@ -8,10 +8,11 @@ export default {component: StepGraph} as ComponentMeta<typeof StepGraph>
 export const Default: ComponentStoryObj<typeof StepGraph> = {
     args: {
         steps: {
-            "n1": { after: [] },
-            "n2": { after: ["n1"] },
-            "n3": { after: ["n1"] },
-            "n4": { after: ["n2", "n3"] }
+            "migrate-db": { after: [], type: "run-job" },
+            "deploy-canary": { after: ["migrate-db"], type: "deploy-manifest" },
+            "deploy-baseline": { after: ["migrate-db"], type: "deploy-manifest" },
+            "deploy-main": { after: ["deploy-baseline", "deploy-canary"], type: "deploy-manifest" },
+            "webhook": { after: ["deploy-main"], type: "webhook" },
         }
     }
 }

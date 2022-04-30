@@ -1,15 +1,24 @@
 import React, {useLayoutEffect, useState} from 'react';
-import { Graph } from '@visx/network';
-import ELK, {ElkLayoutArguments, ElkNode} from 'elkjs/lib/elk-api';
+import {DefaultLink, DefaultNode, Graph as VGraph} from '@visx/network';
+import ELK, {ElkEdge, ElkLayoutArguments, ElkNode} from 'elkjs/lib/elk-api';
+import StepNodeLink from '../StepNodeLink/StepNodeLink';
+import {ElkExtendedEdge} from "elkjs";
+import StepNode from "../StepNode/StepNode";
+
 const elk = new ELK({
-    workerFactory: function(url) {
-        const { Worker } = require('elkjs/lib/elk-worker.js')
+    workerFactory: function (url) {
+        const {Worker} = require('elkjs/lib/elk-worker.js')
         return new Worker(url)
+    },
+    defaultLayoutOptions: {
+        'org.eclipse.elk.algorithm': 'org.eclipse.elk.layered',
+        'org.eclipse.elk.direction': 'RIGHT',
+        'org.eclipse.elk.edgeRouting': "ORTHOGONAL",
+        'org.eclipse.elk.layered.nodePlacement.bk.fixedAlignment': 'BALANCED',
+        'org.eclipse.elk.spacing.nodeNode': '40',
+        'org.eclipse.elk.spacing.nodeNodeBetweenLayers': '40',
     }
 })
-
-import StepNode from '../StepNode/StepNode';
-
 
 export interface StepGraphProps {
     steps: Steps
@@ -17,46 +26,94 @@ export interface StepGraphProps {
 
 interface Steps {
     [key: string]: {
+        type: string,
         after: string[],
     }
 }
 
-const toNodesAndEdges = async (steps: Steps, width: number, height: number): Promise<ElkNode> => {
+interface Detail {
+    type: string
+}
+
+interface Details {
+    [key: string]: Detail
+}
+
+interface ExtendedNode extends ElkNode {
+    edges: ElkExtendedEdge[]
+}
+
+interface Graph {
+    links: ElkExtendedEdge[]
+    nodes: ElkNode[]
+    width: number,
+    height: number,
+    details: Details,
+}
+
+const toNodesAndEdges = async (steps: Steps, width: number, height: number): Promise<Graph> => {
     const tmpNode = {
         id: "root",
         layoutOptions: {},
         children: [],
         edges: [],
-    } as ElkNode;
+    } as ExtendedNode;
+    const details: Details = {}
     for (let k in steps) {
         // @ts-ignore
-        tmpNode.children.push({id: k, width: 200, height: 75})
+        tmpNode.children.push({id: k, width: width, height: height})
+        details[k] = { type: steps[k].type }
         for (let a in steps[k].after) {
             // @ts-ignore
-            tmpNode.edges.push({id: `${k}To${a}`, sources: [k], targets: [steps[k].after[a]]})
+            tmpNode.edges.push({id: `${k}To${a}`, sources: [steps[k].after[a]], targets: [k]})
         }
     }
 
-    // TODO: calculate positioning using Elk
-    return elk.layout(tmpNode)
+    const calculated = await elk.layout(tmpNode)
+    console.log(calculated);
+    return {
+        links: calculated.edges,
+        nodes: calculated.children,
+        width: calculated.width,
+        height: calculated.height,
+        details: details,
+    } as Graph;
 };
 
 const StepGraph: React.FC<StepGraphProps> = ({steps}) => {
-    const [elkGraph, updateElkGraph] = useState<ElkNode>()
+    const [graph, updateGraph] = useState<Graph>({
+        links: [],
+        nodes: [],
+        width: 0,
+        height: 0,
+        details: {},
+    })
     useLayoutEffect(() => {
-        toNodesAndEdges(steps, 200, 75)
+        toNodesAndEdges(steps, 210, 105)
             .then((g) => {
-                updateElkGraph(g)
                 console.log(g)
+                updateGraph(g)
             });
     }, [steps])
     return (
-        <Graph
-            nodeComponent={comp => {
-            <StepNode type="placeholder" name={comp.}/>
-        }}
-            graph={elkGraph}
-        />
+        <svg
+            className="graph"
+            width={graph.width}
+            height={graph.height}
+            viewBox={`0 0 ${graph.width} ${graph.height}`}
+            preserveAspectRatio="xMidYMin meet"
+        >
+            <VGraph
+                nodeComponent={c => (
+                    <foreignObject width="210" height="105">
+                        <StepNode name={c.node.id} type={graph.details[c.node.id].type} />
+                    </foreignObject>
+                )}
+                linkComponent={StepNodeLink}
+                graph={graph}
+            />
+        </svg>
+        // <div>foo</div>
     );
 }
 
