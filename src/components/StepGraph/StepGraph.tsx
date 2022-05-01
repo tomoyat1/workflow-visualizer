@@ -24,7 +24,7 @@ export interface StepGraphProps {
   steps: Steps;
 }
 
-interface Steps {
+export interface Steps {
   [key: string]: {
     type: string;
     after: string[];
