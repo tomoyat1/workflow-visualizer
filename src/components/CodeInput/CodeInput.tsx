@@ -1,33 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Container, TextField } from "@mui/material";
 
 interface CodeInputProp {
   invalid: boolean;
-  updateCodeCallback: (code: string) => void;
+  value: string;
+  updateCode: (code: string) => void;
 }
 
-const CodeInput: React.FC<CodeInputProp> = ({
-  invalid,
-  updateCodeCallback,
-}) => {
-  const [code, updateCode] = useState<string>();
+const CodeInput: React.FC<CodeInputProp> = ({ invalid, value, updateCode }) => {
   const onChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateCode(value);
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (code !== undefined) {
-        updateCodeCallback(code);
-      }
-    }, 1200);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  });
 
   return (
     <Container>
@@ -37,6 +22,7 @@ const CodeInput: React.FC<CodeInputProp> = ({
         fullWidth
         minRows={20}
         maxRows={20}
+        value={value}
         onChange={onChange}
         helperText={invalid ? "Invalid workfow YAML" : ""}
       />
