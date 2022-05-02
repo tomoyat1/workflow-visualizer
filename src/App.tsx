@@ -18,7 +18,7 @@ const parse = (y: any): Steps => {
 };
 
 const App: React.FC = () => {
-  const [invalid, updateInvalid] = useState(false);
+  const [invalid, updateInvalid] = useState(true);
   const [code, updateCode] = useState("");
   const [steps, updateSteps] = useState<Steps>();
 
