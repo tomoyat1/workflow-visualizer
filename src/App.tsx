@@ -21,7 +21,7 @@ const parse = (y: any): Steps => {
 const App: React.FC = () => {
   const [invalid, updateInvalid] = useState(true);
   const [code, updateCode] = useState("");
-  const [steps, updateSteps] = useState<Steps>();
+  const [steps, updateSteps] = useState<Steps>({});
   const [parseError, updateParseError] = useState<ZodError>();
 
   useLayoutEffect(() => {
@@ -48,7 +48,7 @@ const App: React.FC = () => {
 
   return (
     <Container>
-      {steps !== undefined ? (
+      {!invalid ? (
         <StepGraph steps={steps}></StepGraph>
       ) : (
         <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
