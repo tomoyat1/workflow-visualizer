@@ -6,14 +6,17 @@ import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
 
 const App: React.FC = () => {
+  const [invalid, updateInvalid] = useState(false);
   const [steps, updateSteps] = useState<Steps>();
+
   const codeUpdateCallback = (code: string) => {
-    // TODO: parse steps
     let parsed: Steps;
     try {
       parsed = yaml.load(code) as Steps; // TODO: validate with zod
+      updateInvalid(false);
     } catch (e) {
       console.log(e);
+      updateInvalid(true);
       parsed = {};
     }
 
@@ -28,7 +31,7 @@ const App: React.FC = () => {
         <div>No graph data!</div>
       )}
 
-      <CodeInput updateCodeCallback={codeUpdateCallback} />
+      <CodeInput invalid={invalid} updateCodeCallback={codeUpdateCallback} />
     </Container>
   );
 };

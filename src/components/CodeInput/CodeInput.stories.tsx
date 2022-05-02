@@ -7,6 +7,7 @@ export default { component: CodeInput } as ComponentMeta<typeof CodeInput>;
 
 export const Default: ComponentStoryObj<typeof CodeInput> = {
   args: {
+    invalid: true,
     updateCodeCallback: (c: string) => {
       console.log(c);
     },
