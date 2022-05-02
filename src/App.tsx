@@ -4,6 +4,18 @@ import { Container } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
 import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
+import * as z from "zod";
+
+const parse = (y: any): Steps => {
+  const schema = z.record(
+    z.object({
+      type: z.string(),
+      after: z.array(z.string()),
+    })
+  );
+
+  return schema.parse(y);
+};
 
 const App: React.FC = () => {
   const [invalid, updateInvalid] = useState(false);
@@ -14,7 +26,8 @@ const App: React.FC = () => {
     const timer = setTimeout(() => {
       let parsed: Steps;
       try {
-        parsed = yaml.load(code) as Steps;
+        const y = yaml.load(code);
+        parsed = parse(y);
         updateInvalid(false);
       } catch (e) {
         updateInvalid(true);
