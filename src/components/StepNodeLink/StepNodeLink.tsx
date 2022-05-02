@@ -13,16 +13,11 @@ const NodeLink: React.FC<NodeLinkProp> = ({ link }) => {
   const { x: startX, y: startY } = sections.startPoint;
   const { x: targetX, y: targetY } = sections.endPoint;
 
-  console.log(sections.startPoint);
-  console.log(sections.endPoint);
-
   const percent = 0.5;
   path.moveTo(startX, startY);
   // path.lineTo(startX, startY + (targetY - startY) * percent);
   // path.lineTo(targetX, startY + (targetY - startY) * percent);
   path.lineTo(targetX, targetY - 1);
-
-  console.log(path);
 
   return (
     // TODO: put link style in CSS

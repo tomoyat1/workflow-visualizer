@@ -15,18 +15,16 @@ const CodeInput: React.FC<CodeInputProp> = ({ invalid, value, updateCode }) => {
   };
 
   return (
-    <Container>
-      <TextField
-        error={invalid}
-        multiline
-        fullWidth
-        minRows={20}
-        maxRows={20}
-        value={value}
-        onChange={onChange}
-        helperText={invalid ? "Invalid workfow YAML" : ""}
-      />
-    </Container>
+    <TextField
+      error={invalid}
+      multiline
+      fullWidth
+      minRows={20}
+      maxRows={20}
+      value={value}
+      onChange={onChange}
+      helperText={invalid ? "Invalid workfow YAML" : ""}
+    />
   );
 };
 

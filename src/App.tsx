@@ -1,10 +1,11 @@
 import React, { useLayoutEffect, useState } from "react";
 import "./App.css";
-import { Container } from "@mui/material";
+import { Alert, Container } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
 import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
 import * as z from "zod";
+import { ZodError } from "zod";
 
 const parse = (y: any): Steps => {
   const schema = z.record(
@@ -21,6 +22,7 @@ const App: React.FC = () => {
   const [invalid, updateInvalid] = useState(true);
   const [code, updateCode] = useState("");
   const [steps, updateSteps] = useState<Steps>();
+  const [parseError, updateParseError] = useState<ZodError>();
 
   useLayoutEffect(() => {
     const timer = setTimeout(() => {
@@ -30,6 +32,9 @@ const App: React.FC = () => {
         parsed = parse(y);
         updateInvalid(false);
       } catch (e) {
+        if (e instanceof ZodError) {
+          updateParseError(e);
+        }
         updateInvalid(true);
         parsed = {};
       }
@@ -46,7 +51,9 @@ const App: React.FC = () => {
       {steps !== undefined ? (
         <StepGraph steps={steps}></StepGraph>
       ) : (
-        <div>No graph data!</div>
+        <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
+          parseError?.issues
+        )}`}</Alert>
       )}
       <CodeInput invalid={invalid} value={code} updateCode={updateCode} />
     </Container>

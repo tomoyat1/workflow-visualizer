@@ -78,7 +78,6 @@ const toNodesAndEdges = async (
   }
 
   const calculated = await elk.layout(tmpNode);
-  console.log(calculated);
   return {
     links: calculated.edges,
     nodes: calculated.children,
@@ -98,7 +97,6 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps }) => {
   });
   useLayoutEffect(() => {
     toNodesAndEdges(steps, 210, 105).then((g) => {
-      console.log(g);
       updateGraph(g);
     });
   }, [steps]);
@@ -120,7 +118,6 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps }) => {
         graph={graph}
       />
     </svg>
-    // <div>foo</div>
   );
 };
 
