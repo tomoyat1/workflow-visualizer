@@ -20,7 +20,6 @@ const NodeLink: React.FC<NodeLinkProp> = ({ link }) => {
   path.lineTo(targetX, targetY - 1);
 
   return (
-    // TODO: put link style in CSS
     <path
       strokeWidth={2}
       fill="none"

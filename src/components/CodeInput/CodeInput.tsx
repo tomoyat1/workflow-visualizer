@@ -23,7 +23,7 @@ const CodeInput: React.FC<CodeInputProp> = ({ invalid, value, updateCode }) => {
       maxRows={20}
       value={value}
       onChange={onChange}
-      helperText={invalid ? "Invalid workfow YAML" : ""}
+      helperText={invalid ? "Invalid workflow YAML" : ""}
     />
   );
 };
