@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./App.css";
 import { Alert, Grid } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
@@ -21,13 +21,34 @@ const parse = (y: any): Steps => {
   return schema.parse(y);
 };
 
+const getWindowDimensions = () => {
+  const { innerWidth: width, innerHeight: height } = window;
+  return { width, height };
+};
+
+const useWindowDimensions = () => {
+  const [windowDimensions, updateWindowDimensions] = useState(
+    getWindowDimensions()
+  );
+
+  useEffect(() => {
+    const handleResize = () => updateWindowDimensions(getWindowDimensions());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowDimensions;
+};
+
 const App: React.FC = () => {
   const [invalid, updateInvalid] = useState(true);
   const [code, updateCode] = useState("");
   const [steps, updateSteps] = useState<Steps>({});
   const [selectedStep, updateSelectedStep] = useState<string>();
   const [parseError, updateParseError] = useState<ZodError>();
-
+  const [graphHeight, updateGraphHeight] = useState<number>(0);
+  const codeInputEl = useRef<HTMLDivElement>(null);
+  const { height } = useWindowDimensions();
   useLayoutEffect(() => {
     const timer = setTimeout(() => {
       let parsed: Steps;
@@ -51,6 +72,13 @@ const App: React.FC = () => {
     };
   }, [code]);
 
+  useLayoutEffect(() => {
+    if (codeInputEl.current != null) {
+      const h = codeInputEl.current.offsetHeight;
+      updateGraphHeight(height - h - 16); // 8px paddings on top and bottom of <Box />
+    }
+  });
+
   const onNodeClick = (name: string) => {
     updateSelectedStep(name);
   };
@@ -59,7 +87,7 @@ const App: React.FC = () => {
     <Grid container>
       <Grid item xs={8}>
         <Box sx={{ p: 1 }}>
-          <Box sx={{ height: 500 }}>
+          <Box sx={{ height: graphHeight }}>
             {!invalid ? (
               <StepGraph steps={steps} onNodeClick={onNodeClick} />
             ) : (
@@ -68,7 +96,12 @@ const App: React.FC = () => {
               )}`}</Alert>
             )}
           </Box>
-          <CodeInput invalid={invalid} value={code} updateCode={updateCode} />
+          <CodeInput
+            invalid={invalid}
+            value={code}
+            updateCode={updateCode}
+            ref={codeInputEl}
+          />
         </Box>
       </Grid>
       <Grid item xs={4}>
