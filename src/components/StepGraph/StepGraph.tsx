@@ -53,8 +53,8 @@ interface Graph {
 
 const toNodesAndEdges = async (
   steps: Steps,
-  width: number,
-  height: number
+  nodeWidth: number,
+  nodeHeight: number
 ): Promise<Graph> => {
   const tmpNode = {
     id: "root",
@@ -65,7 +65,7 @@ const toNodesAndEdges = async (
   const details: Details = {};
   for (let k in steps) {
     // @ts-ignore
-    tmpNode.children.push({ id: k, width: width, height: height });
+    tmpNode.children.push({ id: k, width: nodeWidth, height: nodeHeight });
     details[k] = { type: steps[k].type };
     for (let a in steps[k].after) {
       // @ts-ignore
@@ -88,6 +88,7 @@ const toNodesAndEdges = async (
 };
 
 const StepGraph: React.FC<StepGraphProps> = ({ steps }) => {
+  const [nodeWidth, nodeHeight] = [210, 105];
   const [graph, updateGraph] = useState<Graph>({
     links: [],
     nodes: [],
@@ -96,8 +97,9 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps }) => {
     details: {},
   });
   useLayoutEffect(() => {
-    toNodesAndEdges(steps, 210, 105).then((g) => {
+    toNodesAndEdges(steps, nodeWidth, nodeHeight).then((g) => {
       updateGraph(g);
+      console.log(g);
     });
   }, [steps]);
   return (
@@ -110,9 +112,7 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps }) => {
     >
       <VGraph
         nodeComponent={(c) => (
-          <foreignObject width="210" height="105">
-            <StepNode name={c.node.id} type={graph.details[c.node.id].type} />
-          </foreignObject>
+          <StepNode name={c.node.id} type={graph.details[c.node.id].type} />
         )}
         linkComponent={StepNodeLink}
         graph={graph}

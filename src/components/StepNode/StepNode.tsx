@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { Card } from "@mui/material";
 
 import Box from "@mui/material/Box";
-import { positions } from "@mui/system";
 
 export interface StepNodeProps {
   name: string;
@@ -10,30 +9,42 @@ export interface StepNodeProps {
 }
 
 const StepNode: React.FC<StepNodeProps> = ({ name, type }) => {
+  const [[cardWidth, cardHeight], updateCardSize] = useState([0, 0]);
+  const cardEl = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (cardEl.current != null) {
+      updateCardSize([cardEl.current.clientWidth, cardEl.current.clientHeight]);
+    }
+  }, [cardEl]);
   return (
-    <Card
-      sx={{
-        width: 200,
-      }}
-    >
-      <Box
+    <foreignObject width={cardWidth + 10} height={cardHeight + 10}>
+      <Card
         sx={{
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: { xs: "center", md: "flex-start" },
+          width: 200,
+          ml: "5px",
+          mt: "5px",
         }}
+        ref={cardEl}
       >
         <Box
           sx={{
-            fontSize: "h6.fontSize",
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: { xs: "center", md: "flex-start" },
           }}
         >
-          {name}
+          <Box
+            sx={{
+              fontSize: "h6.fontSize",
+            }}
+          >
+            {name}
+          </Box>
+          <Box sx={{ typography: "subtitle1" }}>{type}</Box>
         </Box>
-        <Box sx={{ typography: "subtitle1" }}>{type}</Box>
-      </Box>
-    </Card>
+      </Card>
+    </foreignObject>
   );
 };
 
