@@ -20,21 +20,23 @@ const elk = new ELK({
   },
 });
 
-export interface StepGraphProps {
-  steps: Steps;
-  onNodeClick: (name: string) => void;
-}
-
 export interface StepArgs {
   [key: string]: string;
 }
 
+export interface Step {
+  type: string;
+  after: string[];
+  args: StepArgs;
+}
+
 export interface Steps {
-  [key: string]: {
-    type: string;
-    after: string[];
-    args: StepArgs;
-  };
+  [key: string]: Step;
+}
+
+export interface StepGraphProps {
+  steps: Steps;
+  onNodeClick: (name: string) => void;
 }
 
 interface Detail {

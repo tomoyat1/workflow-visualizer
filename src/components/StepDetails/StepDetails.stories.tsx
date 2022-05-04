@@ -7,11 +7,13 @@ export default { component: StepDetails } as ComponentMeta<typeof StepDetails>;
 
 export const Default: ComponentStoryObj<typeof StepDetails> = {
   args: {
-    name: "deploy-main",
-    type: "deploy-manifest",
-    args: {
-      cluster: "my-cluster",
-      environment: "production",
+    step: {
+      name: "deploy-main",
+      type: "deploy-manifest",
+      args: {
+        cluster: "my-cluster",
+        environment: "production",
+      },
     },
   },
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./App.css";
-import { Alert, Grid } from "@mui/material";
+import { Alert, Grid, Stack } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
 import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
@@ -44,7 +44,7 @@ const App: React.FC = () => {
   const [invalid, updateInvalid] = useState(true);
   const [code, updateCode] = useState("");
   const [steps, updateSteps] = useState<Steps>({});
-  const [selectedStep, updateSelectedStep] = useState<string>();
+  const [selectedStep, updateSelectedStep] = useState<string>("");
   const [parseError, updateParseError] = useState<ZodError>();
   const [graphHeight, updateGraphHeight] = useState<number>(0);
   const codeInputEl = useRef<HTMLDivElement>(null);
@@ -85,7 +85,7 @@ const App: React.FC = () => {
 
   return (
     <Grid container>
-      <Grid item xs={8}>
+      <Grid item xs={9}>
         <Box sx={{ p: 1 }}>
           <Box sx={{ height: graphHeight }}>
             {!invalid ? (
@@ -104,18 +104,18 @@ const App: React.FC = () => {
           />
         </Box>
       </Grid>
-      <Grid item xs={4}>
-        <Box sx={{ p: 1 }}>
-          {selectedStep !== undefined && steps[selectedStep] !== undefined ? (
-            <StepDetails
-              name={selectedStep}
-              type={steps[selectedStep].type}
-              args={steps[selectedStep].args}
-            />
-          ) : (
-            <div>Please select a step</div>
-          )}
-        </Box>
+      <Grid item xs={3} sx={{ p: 1, display: "flex" }}>
+        <StepDetails
+          step={
+            steps[selectedStep] !== undefined
+              ? {
+                  name: selectedStep,
+                  ...steps[selectedStep],
+                }
+              : undefined
+          }
+          sx={{ flexGrow: 1 }}
+        />
       </Grid>
     </Grid>
   );
