@@ -15,9 +15,9 @@ const NodeLink: React.FC<NodeLinkProp> = ({ link }) => {
 
   const percent = 0.5;
   path.moveTo(startX, startY);
-  // path.lineTo(startX, startY + (targetY - startY) * percent);
-  // path.lineTo(targetX, startY + (targetY - startY) * percent);
-  path.lineTo(targetX, targetY - 1);
+  path.lineTo(startX + (targetX - startX) * percent, startY);
+  path.lineTo(startX + (targetX - startX) * percent, targetY);
+  path.lineTo(targetX - 1, targetY);
 
   return (
     <path
