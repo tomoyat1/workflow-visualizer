@@ -24,6 +24,7 @@ const StepNode: React.FC<StepNodeProps> = ({ name, type, onNodeClick }) => {
   }, [cardEl]);
 
   const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.stopPropagation();
     onNodeClick(name);
   };
   return (

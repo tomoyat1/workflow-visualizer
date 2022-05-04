@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./App.css";
-import { Alert, Grid, Stack } from "@mui/material";
+import { Alert, Grid } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
 import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
@@ -79,17 +79,20 @@ const App: React.FC = () => {
     }
   });
 
-  const onNodeClick = (name: string) => {
-    updateSelectedStep(name);
-  };
-
   return (
     <Grid container>
-      <Grid item xs={9}>
+      <Grid
+        item
+        xs={9}
+        onClick={(e) => {
+          e.stopPropagation();
+          updateSelectedStep("");
+        }}
+      >
         <Box sx={{ p: 1 }}>
           <Box sx={{ height: graphHeight }}>
             {!invalid ? (
-              <StepGraph steps={steps} onNodeClick={onNodeClick} />
+              <StepGraph steps={steps} onNodeClick={updateSelectedStep} />
             ) : (
               <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
                 parseError?.issues
