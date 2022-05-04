@@ -7,23 +7,37 @@ Let's say you happen to have a "workflow" written in the following YAML format..
 migrate-db: 
   after: []
   type: "run-job"
+  args:
+    image: my-migration
+    revision: "20220504133700"
 deploy-canary: 
   after: 
   - "migrate-db"
   type: "deploy-manifest"
+  args:
+    cluster: my-cluster
+    environment: production
 deploy-baseline: 
   after: 
   - "migrate-db"
   type: "deploy-manifest"
+  args:
+    cluster: my-cluster
+    environment: production
 deploy-main: 
   after: 
   - "deploy-baseline"
   - "deploy-canary"
   type: "deploy-manifest"
+  args:
+    cluster: my-cluster
+    environment: production
 webhook: 
   after: 
   - "deploy-main"
   type: "webhook"
+  args:
+    url: https://example.com/deployDone
 ```
 
 , and you want a handy tool to visualize it. Use `workflow-visualizer`!
