@@ -6,6 +6,7 @@ import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
 import * as z from "zod";
 import { ZodError } from "zod";
+import { Box } from "@mui/system";
 
 const parse = (y: any): Steps => {
   const schema = z.record(
@@ -48,13 +49,15 @@ const App: React.FC = () => {
 
   return (
     <Container>
-      {!invalid ? (
-        <StepGraph steps={steps}></StepGraph>
-      ) : (
-        <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
-          parseError?.issues
-        )}`}</Alert>
-      )}
+      <Box sx={{ height: 500 }}>
+        {!invalid ? (
+          <StepGraph steps={steps}></StepGraph>
+        ) : (
+          <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
+            parseError?.issues
+          )}`}</Alert>
+        )}
+      </Box>
       <CodeInput invalid={invalid} value={code} updateCode={updateCode} />
     </Container>
   );

@@ -19,8 +19,8 @@ const CodeInput: React.FC<CodeInputProp> = ({ invalid, value, updateCode }) => {
       error={invalid}
       multiline
       fullWidth
-      minRows={20}
-      maxRows={20}
+      minRows={15}
+      maxRows={15}
       value={value}
       onChange={onChange}
       helperText={invalid ? "Invalid workflow YAML" : ""}
