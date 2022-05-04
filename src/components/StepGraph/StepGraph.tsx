@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from "react";
-import { DefaultLink, DefaultNode, Graph as VGraph } from "@visx/network";
-import ELK, { ElkEdge, ElkLayoutArguments, ElkNode } from "elkjs/lib/elk-api";
+import { Graph as VGraph } from "@visx/network";
+import ELK, { ElkNode } from "elkjs/lib/elk-api";
 import StepNodeLink from "../StepNodeLink/StepNodeLink";
 import { ElkExtendedEdge } from "elkjs";
 import StepNode from "../StepNode/StepNode";
@@ -22,12 +22,18 @@ const elk = new ELK({
 
 export interface StepGraphProps {
   steps: Steps;
+  onNodeClick: (name: string) => void;
+}
+
+export interface StepArgs {
+  [key: string]: string;
 }
 
 export interface Steps {
   [key: string]: {
     type: string;
     after: string[];
+    args: StepArgs;
   };
 }
 
@@ -87,7 +93,7 @@ const toNodesAndEdges = async (
   } as Graph;
 };
 
-const StepGraph: React.FC<StepGraphProps> = ({ steps }) => {
+const StepGraph: React.FC<StepGraphProps> = ({ steps, onNodeClick }) => {
   const [nodeWidth, nodeHeight] = [210, 105];
   const [graph, updateGraph] = useState<Graph>({
     links: [],
@@ -101,7 +107,7 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps }) => {
       updateGraph(g);
       console.log(g);
     });
-  }, [steps]);
+  }, [steps, nodeWidth, nodeHeight]);
   return (
     <svg
       className="graph"
@@ -112,7 +118,11 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps }) => {
     >
       <VGraph
         nodeComponent={(c) => (
-          <StepNode name={c.node.id} type={graph.details[c.node.id].type} />
+          <StepNode
+            onNodeClick={onNodeClick}
+            name={c.node.id}
+            type={graph.details[c.node.id].type}
+          />
         )}
         linkComponent={StepNodeLink}
         graph={graph}

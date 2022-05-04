@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Paper,
   TableContainer,
   TableHead,
   TableRow,
@@ -11,11 +10,7 @@ import {
   TableBody,
   Table,
 } from "@mui/material";
-import Box from "@mui/material/Box";
-
-interface StepArgs {
-  [key: string]: string;
-}
+import { StepArgs } from "../StepGraph/StepGraph";
 
 interface StepDetailsProps {
   name: string;

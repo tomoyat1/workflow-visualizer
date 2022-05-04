@@ -1,4 +1,9 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, {
+  MouseEventHandler,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { Card } from "@mui/material";
 
 import Box from "@mui/material/Box";
@@ -6,9 +11,10 @@ import Box from "@mui/material/Box";
 export interface StepNodeProps {
   name: string;
   type: string;
+  onNodeClick: (name: string) => void;
 }
 
-const StepNode: React.FC<StepNodeProps> = ({ name, type }) => {
+const StepNode: React.FC<StepNodeProps> = ({ name, type, onNodeClick }) => {
   const [[cardWidth, cardHeight], updateCardSize] = useState([0, 0]);
   const cardEl = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -16,6 +22,10 @@ const StepNode: React.FC<StepNodeProps> = ({ name, type }) => {
       updateCardSize([cardEl.current.clientWidth, cardEl.current.clientHeight]);
     }
   }, [cardEl]);
+
+  const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
+    onNodeClick(name);
+  };
   return (
     <foreignObject width={cardWidth + 10} height={cardHeight + 10}>
       <Card
@@ -25,6 +35,7 @@ const StepNode: React.FC<StepNodeProps> = ({ name, type }) => {
           mt: "5px",
         }}
         ref={cardEl}
+        onClick={onClick}
       >
         <Box
           sx={{
