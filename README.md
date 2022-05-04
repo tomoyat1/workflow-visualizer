@@ -5,7 +5,7 @@ Let's say you happen to have a "workflow" written in the following YAML format..
 ```yaml
 ---
 migrate-db: 
-  after: 
+  after: []
   type: "run-job"
 deploy-canary: 
   after: 

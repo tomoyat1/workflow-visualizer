@@ -17,16 +17,31 @@ const NodeLink: React.FC<NodeLinkProp> = ({ link }) => {
   path.moveTo(startX, startY);
   path.lineTo(startX + (targetX - startX) * percent, startY);
   path.lineTo(startX + (targetX - startX) * percent, targetY);
-  path.lineTo(targetX - 1, targetY);
+  path.lineTo(targetX - 2, targetY);
 
   return (
-    <path
-      strokeWidth={2}
-      fill="none"
-      stroke="#000000"
-      strokeOpacity={1}
-      d={path.toString()}
-    />
+    <g>
+      <defs>
+        <marker
+          id="markerArrow"
+          markerWidth="13"
+          markerHeight="13"
+          refX="3"
+          refY="6"
+          orient="auto"
+        >
+          <path d="M2,2 L2,10 L5,6 L2,2" />
+        </marker>
+      </defs>
+      <path
+        strokeWidth={2}
+        fill="none"
+        stroke="#000000"
+        strokeOpacity={1}
+        d={path.toString()}
+        markerEnd="url(#markerArrow)"
+      />
+    </g>
   );
 };
 
