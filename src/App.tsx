@@ -1,13 +1,13 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./App.css";
-import { Alert, Grid } from "@mui/material";
+import { Alert, Card, CardContent, Grid, Stack } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
 import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
 import * as z from "zod";
 import { ZodError } from "zod";
-import { Box } from "@mui/system";
 import StepDetails from "./components/StepDetails/StepDetails";
+import { Box } from "@mui/system";
 
 const parse = (y: any): Steps => {
   const schema = z.record(
@@ -48,7 +48,7 @@ const App: React.FC = () => {
   const [parseError, updateParseError] = useState<ZodError>();
   const [graphHeight, updateGraphHeight] = useState<number>(0);
   const codeInputEl = useRef<HTMLDivElement>(null);
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   useLayoutEffect(() => {
     const timer = setTimeout(() => {
       let parsed: Steps;
@@ -79,46 +79,62 @@ const App: React.FC = () => {
     }
   });
 
+  const graphComponent = () => (
+    <Card sx={{ height: 1 }}>
+      <CardContent>
+        {!invalid ? (
+          <StepGraph steps={steps} onNodeClick={updateSelectedStep} />
+        ) : (
+          <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
+            parseError?.issues
+          )}`}</Alert>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  const codeInputComponent = () => (
+    <CodeInput
+      invalid={invalid}
+      value={code}
+      updateCode={updateCode}
+      ref={codeInputEl}
+    />
+  );
+
+  const detailsComponent = () => (
+    <StepDetails
+      step={
+        steps[selectedStep] !== undefined
+          ? {
+              name: selectedStep,
+              ...steps[selectedStep],
+            }
+          : undefined
+      }
+      sx={{
+        height: 1,
+      }}
+    />
+  );
+
   return (
-    <Grid container>
-      <Grid
-        item
-        xs={9}
-        onClick={(e) => {
-          e.stopPropagation();
-          updateSelectedStep("");
-        }}
-      >
-        <Box sx={{ p: 1 }}>
-          <Box sx={{ height: graphHeight }}>
-            {!invalid ? (
-              <StepGraph steps={steps} onNodeClick={updateSelectedStep} />
-            ) : (
-              <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
-                parseError?.issues
-              )}`}</Alert>
-            )}
-          </Box>
-          <CodeInput
-            invalid={invalid}
-            value={code}
-            updateCode={updateCode}
-            ref={codeInputEl}
-          />
-        </Box>
+    <Grid
+      container
+      direction="column"
+      spacing={1}
+      sx={{ p: 1, height: height }}
+    >
+      <Grid item sx={{ width: 1, flexGrow: 1 }}>
+        {graphComponent()}
       </Grid>
-      <Grid item xs={3} sx={{ p: 1, display: "flex" }}>
-        <StepDetails
-          step={
-            steps[selectedStep] !== undefined
-              ? {
-                  name: selectedStep,
-                  ...steps[selectedStep],
-                }
-              : undefined
-          }
-          sx={{ flexGrow: 1 }}
-        />
+      <Grid item container direction="row" spacing={1} sx={{ mt: "auto" }}>
+        <Grid xs={12} md={8} item>
+          {codeInputComponent()}
+        </Grid>
+        <Grid xs={12} md={4} item>
+          {detailsComponent()}
+        </Grid>
       </Grid>
     </Grid>
   );
