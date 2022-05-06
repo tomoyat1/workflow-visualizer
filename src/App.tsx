@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./App.css";
-import { Alert, Card, CardContent, Grid, Stack } from "@mui/material";
+import { Alert, Card, CardContent, Drawer, Grid, Stack } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
 import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
@@ -49,6 +49,7 @@ const App: React.FC = () => {
   const [graphHeight, updateGraphHeight] = useState<number>(0);
   const codeInputEl = useRef<HTMLDivElement>(null);
   const { height, width } = useWindowDimensions();
+  const drawerWidth = width / 4;
   useLayoutEffect(() => {
     const timer = setTimeout(() => {
       let parsed: Steps;
@@ -72,6 +73,10 @@ const App: React.FC = () => {
     };
   }, [code]);
 
+  const onNodeClick = (name: string) => {
+    updateSelectedStep(name);
+  };
+
   useLayoutEffect(() => {
     if (codeInputEl.current != null) {
       const h = codeInputEl.current.offsetHeight;
@@ -80,17 +85,13 @@ const App: React.FC = () => {
   });
 
   const graphComponent = () =>
-    // <Card sx={{ height: 1 }}>
-    //   <CardContent>
     !invalid ? (
-      <StepGraph steps={steps} onNodeClick={updateSelectedStep} />
+      <StepGraph steps={steps} onNodeClick={onNodeClick} />
     ) : (
       <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
         parseError?.issues
       )}`}</Alert>
     );
-  //   </CardContent>
-  // </Card>
 
   const codeInputComponent = () => (
     <CodeInput
@@ -117,24 +118,40 @@ const App: React.FC = () => {
   );
 
   return (
-    <Grid
-      container
-      direction="column"
-      spacing={1}
-      sx={{ p: 1, height: height }}
-    >
-      <Grid item sx={{ width: 1, flexGrow: 1 }}>
-        {graphComponent()}
-      </Grid>
-      <Grid item container direction="row" spacing={1} sx={{ mt: "auto" }}>
-        <Grid xs={12} md={8} item>
-          {codeInputComponent()}
+    <React.Fragment>
+      <Grid
+        container
+        direction="column"
+        spacing={1}
+        sx={{
+          p: 1,
+          height: height,
+          width: width - drawerWidth,
+        }}
+      >
+        <Grid item sx={{ flexGrow: 1 }}>
+          {graphComponent()}
         </Grid>
-        <Grid xs={12} md={4} item>
-          {detailsComponent()}
+        <Grid item container direction="row" spacing={1} sx={{ mt: "auto" }}>
+          <Grid xs={12} md={12} item>
+            {codeInputComponent()}
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+      <Drawer
+        anchor="right"
+        variant="permanent"
+        sx={{
+          flexShrink: 0,
+          width: drawerWidth,
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+          },
+        }}
+      >
+        {detailsComponent()}
+      </Drawer>
+    </React.Fragment>
   );
 };
 

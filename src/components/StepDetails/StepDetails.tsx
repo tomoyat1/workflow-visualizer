@@ -23,9 +23,11 @@ interface StepDetailsProps {
 }
 
 const details = (name: string, type: string, args: StepArgs) => (
-  <Box sx={{ p: 2 }}>
-    <Typography variant="h5">{name}</Typography>
-    <Typography variant="subtitle1">{type}</Typography>
+  <React.Fragment>
+    <Box sx={{ p: 1 }}>
+      <Typography variant="h5">{name}</Typography>
+      <Typography variant="subtitle1">{type}</Typography>
+    </Box>
     <TableContainer component="div">
       <Table sx={{ minWidth: "100%" }}>
         <TableHead>
@@ -47,19 +49,21 @@ const details = (name: string, type: string, args: StepArgs) => (
         </TableBody>
       </Table>
     </TableContainer>
-  </Box>
+  </React.Fragment>
 );
 
 const noDetails = () => (
-  <Box sx={{ p: 1 }}>
-    <Alert severity="info">Click on a step to show its details!</Alert>
-  </Box>
+  <Alert severity="info">Click on a step to show its details!</Alert>
 );
 
 const StepDetails: React.FC<StepDetailsProps> = ({ step }) => {
-  return step !== undefined
-    ? details(step.name, step.type, step.args)
-    : noDetails();
+  return (
+    <Box sx={{ p: 1 }}>
+      {step !== undefined
+        ? details(step.name, step.type, step.args)
+        : noDetails()}
+    </Box>
+  );
 };
 
 export default StepDetails;

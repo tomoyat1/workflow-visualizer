@@ -4,6 +4,7 @@ import ELK, { ElkNode } from "elkjs/lib/elk-api";
 import StepNodeLink from "../StepNodeLink/StepNodeLink";
 import { ElkExtendedEdge } from "elkjs";
 import StepNode from "../StepNode/StepNode";
+import { Box } from "@mui/material";
 
 const elk = new ELK({
   workerFactory: function (url) {
@@ -111,25 +112,36 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps, onNodeClick }) => {
     });
   }, [steps, nodeWidth, nodeHeight]);
   return (
-    <svg
-      className="graph"
-      width={graph.width}
-      height={graph.height}
-      viewBox={`0 0 ${graph.width} ${graph.height}`}
-      preserveAspectRatio="xMidYMin meet"
+    <Box
+      sx={{
+        width: 1,
+        height: 1,
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        onNodeClick("");
+      }}
     >
-      <VGraph
-        nodeComponent={(c) => (
-          <StepNode
-            onNodeClick={onNodeClick}
-            name={c.node.id}
-            type={graph.details[c.node.id].type}
-          />
-        )}
-        linkComponent={StepNodeLink}
-        graph={graph}
-      />
-    </svg>
+      <svg
+        className="graph"
+        width={graph.width}
+        height={graph.height}
+        viewBox={`0 0 ${graph.width} ${graph.height}`}
+        preserveAspectRatio="xMidYMin meet"
+      >
+        <VGraph
+          nodeComponent={(c) => (
+            <StepNode
+              onNodeClick={onNodeClick}
+              name={c.node.id}
+              type={graph.details[c.node.id].type}
+            />
+          )}
+          linkComponent={StepNodeLink}
+          graph={graph}
+        />
+      </svg>
+    </Box>
   );
 };
 
