@@ -34,9 +34,13 @@ const StepNode: React.FC<StepNodeProps> = ({ name, type, onNodeClick }) => {
           width: 200,
           ml: "5px",
           mt: "5px",
+          ":hover": {
+            cursor: "pointer",
+          },
         }}
         ref={cardEl}
         onClick={onClick}
+        variant="outlined"
       >
         <Box
           sx={{

@@ -1,17 +1,14 @@
 import React from "react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
+  Alert,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
-  Table,
-  Alert,
-  SxProps,
-  Theme,
+  Typography,
 } from "@mui/material";
 import { StepArgs } from "../StepGraph/StepGraph";
 
@@ -23,55 +20,46 @@ interface StepDetailsProps {
         args: StepArgs;
       }
     | undefined;
-  sx?: SxProps<Theme>;
 }
 
-const details = (
-  name: string,
-  type: string,
-  args: StepArgs,
-  sx: SxProps<Theme>
-) => (
-  <Card sx={[...(Array.isArray(sx) ? sx : [sx])]}>
-    <CardHeader title={name} subheader={type} />
-    <CardContent>
-      <TableContainer component="div">
-        <Table sx={{ minWidth: "100%" }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Parameter</TableCell>
-              <TableCell>Value</TableCell>
+const details = (name: string, type: string, args: StepArgs) => (
+  <Box sx={{ p: 2 }}>
+    <Typography variant="h5">{name}</Typography>
+    <Typography variant="subtitle1">{type}</Typography>
+    <TableContainer component="div">
+      <Table sx={{ minWidth: "100%" }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Parameter</TableCell>
+            <TableCell>Value</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Object.keys(args).map((k) => (
+            <TableRow
+              key={k}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell>{k}</TableCell>
+              <TableCell>{args[k]}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.keys(args).map((k) => (
-              <TableRow
-                key={k}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell>{k}</TableCell>
-                <TableCell>{args[k]}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </CardContent>
-  </Card>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Box>
 );
 
-const noDetails = (sx: SxProps<Theme>) => (
-  <Card sx={[...(Array.isArray(sx) ? sx : [sx])]}>
-    <CardContent>
-      <Alert severity="info">Click on a step to show its details!</Alert>
-    </CardContent>
-  </Card>
+const noDetails = () => (
+  <Box sx={{ p: 1 }}>
+    <Alert severity="info">Click on a step to show its details!</Alert>
+  </Box>
 );
 
-const StepDetails: React.FC<StepDetailsProps> = ({ step, sx = [] }) => {
+const StepDetails: React.FC<StepDetailsProps> = ({ step }) => {
   return step !== undefined
-    ? details(step.name, step.type, step.args, sx)
-    : noDetails(sx);
+    ? details(step.name, step.type, step.args)
+    : noDetails();
 };
 
 export default StepDetails;

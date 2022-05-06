@@ -79,19 +79,18 @@ const App: React.FC = () => {
     }
   });
 
-  const graphComponent = () => (
-    <Card sx={{ height: 1 }}>
-      <CardContent>
-        {!invalid ? (
-          <StepGraph steps={steps} onNodeClick={updateSelectedStep} />
-        ) : (
-          <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
-            parseError?.issues
-          )}`}</Alert>
-        )}
-      </CardContent>
-    </Card>
-  );
+  const graphComponent = () =>
+    // <Card sx={{ height: 1 }}>
+    //   <CardContent>
+    !invalid ? (
+      <StepGraph steps={steps} onNodeClick={updateSelectedStep} />
+    ) : (
+      <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
+        parseError?.issues
+      )}`}</Alert>
+    );
+  //   </CardContent>
+  // </Card>
 
   const codeInputComponent = () => (
     <CodeInput
@@ -103,19 +102,18 @@ const App: React.FC = () => {
   );
 
   const detailsComponent = () => (
-    <StepDetails
-      step={
-        steps[selectedStep] !== undefined
-          ? {
-              name: selectedStep,
-              ...steps[selectedStep],
-            }
-          : undefined
-      }
-      sx={{
-        height: 1,
-      }}
-    />
+    <Card sx={{ height: 1 }}>
+      <StepDetails
+        step={
+          steps[selectedStep] !== undefined
+            ? {
+                name: selectedStep,
+                ...steps[selectedStep],
+              }
+            : undefined
+        }
+      />
+    </Card>
   );
 
   return (
