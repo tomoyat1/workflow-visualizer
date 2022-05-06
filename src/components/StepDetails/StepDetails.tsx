@@ -13,13 +13,11 @@ import {
 import { StepArgs } from "../StepGraph/StepGraph";
 
 interface StepDetailsProps {
-  step:
-    | {
-        name: string;
-        type: string;
-        args: StepArgs;
-      }
-    | undefined;
+  step?: {
+    name: string;
+    type: string;
+    args: StepArgs;
+  };
 }
 
 const details = (name: string, type: string, args: StepArgs) => (
