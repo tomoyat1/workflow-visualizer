@@ -120,7 +120,7 @@ const App: React.FC = () => {
           item
           sx={{ mt: "auto", borderTop: 1, borderColor: "rgba(0, 0, 0, 0.12)" }}
         >
-          <Box sx={{ m: 1 }}>{codeInputComponent()}</Box>
+          <Box sx={{ m: 1, p: 1 }}>{codeInputComponent()}</Box>
         </Grid>
       </Grid>
       <Drawer
