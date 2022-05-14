@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -12,7 +12,6 @@ interface CodeInputProp {
   invalid: boolean;
   value: string;
   updateCode: (code: string) => void;
-  ref: any;
   sx?: SxProps<Theme>;
 }
 

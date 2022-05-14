@@ -1,13 +1,12 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import "./App.css";
-import { Alert, Card, CardContent, Drawer, Grid, Stack } from "@mui/material";
+import { Alert, Card, Drawer, Grid } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
 import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
 import * as z from "zod";
 import { ZodError } from "zod";
 import StepDetails from "./components/StepDetails/StepDetails";
-import { Box } from "@mui/system";
 
 const parse = (y: any): Steps => {
   const schema = z.record(
@@ -46,7 +45,6 @@ const App: React.FC = () => {
   const [steps, updateSteps] = useState<Steps>({});
   const [selectedStep, updateSelectedStep] = useState<string>("");
   const [parseError, updateParseError] = useState<ZodError>();
-  const codeInputEl = useRef<HTMLDivElement>(null);
   const { height, width } = useWindowDimensions();
   const drawerWidth = width / 4;
   useLayoutEffect(() => {
@@ -86,12 +84,7 @@ const App: React.FC = () => {
     );
 
   const codeInputComponent = () => (
-    <CodeInput
-      invalid={invalid}
-      value={code}
-      updateCode={updateCode}
-      ref={codeInputEl}
-    />
+    <CodeInput invalid={invalid} value={code} updateCode={updateCode} />
   );
 
   const detailsComponent = () => (
