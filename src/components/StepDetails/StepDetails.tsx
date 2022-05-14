@@ -23,8 +23,12 @@ interface StepDetailsProps {
 const details = (name: string, type: string, args: StepArgs) => (
   <React.Fragment>
     <Box sx={{ p: 1 }}>
-      <Typography variant="h5">{name}</Typography>
-      <Typography variant="subtitle1">{type}</Typography>
+      <Typography variant="h5" component="div">
+        {name}
+      </Typography>
+      <Typography variant="subtitle1" component="div">
+        {type}
+      </Typography>
     </Box>
     <TableContainer component="div">
       <Table sx={{ minWidth: "100%" }}>

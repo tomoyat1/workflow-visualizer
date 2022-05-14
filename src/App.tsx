@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import "./App.css";
-import { Alert, Card, Drawer, Grid } from "@mui/material";
+import { Alert, Box, Drawer, Grid } from "@mui/material";
 import StepGraph, { Steps } from "./components/StepGraph/StepGraph";
 import CodeInput from "./components/CodeInput/CodeInput";
 import yaml from "js-yaml";
@@ -78,7 +78,7 @@ const App: React.FC = () => {
     !invalid ? (
       <StepGraph steps={steps} onNodeClick={onNodeClick} />
     ) : (
-      <Alert severity="error">{`Invalid YAML: ${JSON.stringify(
+      <Alert severity="error" sx={{ m: 1 }}>{`Invalid YAML: ${JSON.stringify(
         parseError?.issues
       )}`}</Alert>
     );
@@ -88,7 +88,7 @@ const App: React.FC = () => {
   );
 
   const detailsComponent = () => (
-    <Card sx={{ height: 1 }}>
+    <Box sx={{ height: 1 }}>
       <StepDetails
         step={
           steps[selectedStep] !== undefined
@@ -99,7 +99,7 @@ const App: React.FC = () => {
             : undefined
         }
       />
-    </Card>
+    </Box>
   );
 
   return (
@@ -109,18 +109,18 @@ const App: React.FC = () => {
         direction="column"
         spacing={1}
         sx={{
-          p: 1,
           height: height,
-          width: width - drawerWidth,
+          width: width - drawerWidth + 8, // +8 to account for minus margin
         }}
       >
         <Grid item sx={{ flexGrow: 1 }}>
           {graphComponent()}
         </Grid>
-        <Grid item container direction="row" spacing={1} sx={{ mt: "auto" }}>
-          <Grid xs={12} md={12} item>
-            {codeInputComponent()}
-          </Grid>
+        <Grid
+          item
+          sx={{ mt: "auto", borderTop: 1, borderColor: "rgba(0, 0, 0, 0.12)" }}
+        >
+          <Box sx={{ m: 1 }}>{codeInputComponent()}</Box>
         </Grid>
       </Grid>
       <Drawer

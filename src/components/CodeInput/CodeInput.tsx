@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  SxProps,
-  TextField,
-  Theme,
-} from "@mui/material";
+import { Box, SxProps, TextField, Theme, Typography } from "@mui/material";
 
 interface CodeInputProp {
   invalid: boolean;
@@ -15,25 +8,18 @@ interface CodeInputProp {
   sx?: SxProps<Theme>;
 }
 
-const CodeInput: React.FC<CodeInputProp> = ({
-  invalid,
-  value,
-  updateCode,
-  sx = [],
-}) => {
+const CodeInput: React.FC<CodeInputProp> = ({ invalid, value, updateCode }) => {
   const onChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateCode(value);
   };
   return (
-    <Card sx={[...(Array.isArray(sx) ? sx : [sx])]}>
-      <CardHeader title="Workflow definition" />
-      <CardContent
-        sx={{
-          height: 1,
-        }}
-      >
+    <Box>
+      <Typography variant={"h4"} component={"div"} sx={{ mb: 1 }}>
+        Workflow definition
+      </Typography>
+      <Box>
         <TextField
           error={invalid}
           multiline
@@ -43,8 +29,8 @@ const CodeInput: React.FC<CodeInputProp> = ({
           minRows={10}
           maxRows={10}
         />
-      </CardContent>
-    </Card>
+      </Box>
+    </Box>
   );
 };
 
