@@ -46,7 +46,6 @@ const App: React.FC = () => {
   const [steps, updateSteps] = useState<Steps>({});
   const [selectedStep, updateSelectedStep] = useState<string>("");
   const [parseError, updateParseError] = useState<ZodError>();
-  const [graphHeight, updateGraphHeight] = useState<number>(0);
   const codeInputEl = useRef<HTMLDivElement>(null);
   const { height, width } = useWindowDimensions();
   const drawerWidth = width / 4;
@@ -76,13 +75,6 @@ const App: React.FC = () => {
   const onNodeClick = (name: string) => {
     updateSelectedStep(name);
   };
-
-  useLayoutEffect(() => {
-    if (codeInputEl.current != null) {
-      const h = codeInputEl.current.offsetHeight;
-      updateGraphHeight(height - h - 16); // 8px paddings on top and bottom of <Box />
-    }
-  });
 
   const graphComponent = () =>
     !invalid ? (
