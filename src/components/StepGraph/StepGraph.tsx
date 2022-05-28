@@ -5,6 +5,7 @@ import StepNodeLink from "../StepNodeLink/StepNodeLink";
 import { ElkExtendedEdge } from "elkjs";
 import StepNode from "../StepNode/StepNode";
 import { Box } from "@mui/material";
+import _ from "lodash";
 
 const elk = new ELK({
   workerFactory: function (url) {
@@ -60,11 +61,94 @@ interface Graph {
   details: Details;
 }
 
+interface EdgeMatrix {
+  [key: string]: {
+    [key: string]: boolean;
+  };
+}
+
+const toEdgeMatrix = (steps: Steps): EdgeMatrix => {
+  let mr: EdgeMatrix = {};
+  for (let [to, v] of Object.entries(steps)) {
+    mr[to] = {};
+    for (let from in steps) {
+      mr[to][from] = v.after.includes(from);
+    }
+  }
+  return mr;
+};
+
+const mul = (m1: EdgeMatrix, m2: EdgeMatrix): EdgeMatrix => {
+  let mr: EdgeMatrix = {};
+  for (let [to, v] of Object.entries(m1)) {
+    mr[to] = {};
+    for (let from in v) {
+      let a = false;
+      for (let k in v) {
+        a ||= m1[to][k] && m2[k][from];
+      }
+      mr[to][from] = a;
+    }
+  }
+  return mr;
+};
+
+const exp = (m: EdgeMatrix, n: number): EdgeMatrix => {
+  // Only supports n >= 2
+  let r: EdgeMatrix = _.cloneDeep(m);
+  for (let i = 1; i < n; i++) {
+    r = mul(r, m);
+  }
+  return r;
+};
+
+const xor = (m1: EdgeMatrix, m2: EdgeMatrix): EdgeMatrix => {
+  let r: EdgeMatrix = _.cloneDeep(m1);
+  for (let [to, v] of Object.entries(r)) {
+    r[to] = {};
+    for (let from in v) {
+      r[to][from] = m1[to][from] ? !m2[to][from] : m2[to][from]; // Logical XOR
+    }
+  }
+  return r;
+};
+
+const isZero = (m: EdgeMatrix): boolean => {
+  let zero = xor(m, m); // XOR with self always gives zero.
+  return _.isEqual(m, zero);
+};
+
+const removeShortEdges = (steps: Steps): Steps => {
+  const mat = toEdgeMatrix(steps);
+  let i = 2;
+  let smplMat = _.cloneDeep(mat);
+  while (true) {
+    const nHop = exp(mat, i);
+    if (isZero(nHop)) {
+      break;
+    }
+    for (let [to, v] of Object.entries(nHop)) {
+      for (let from in v) {
+        if (nHop[to][from]) {
+          smplMat[to][from] = false;
+        }
+      }
+    }
+    i++;
+  }
+  let result = _.cloneDeep(steps);
+  for (let [to, v] of Object.entries(result)) {
+    v.after = v.after.filter((a) => smplMat[to][a]);
+  }
+  return result;
+};
+
 const toNodesAndEdges = async (
   steps: Steps,
   nodeWidth: number,
   nodeHeight: number
 ): Promise<Graph> => {
+  steps = removeShortEdges(steps);
   const tmpNode = {
     id: "root",
     layoutOptions: {},
@@ -108,7 +192,6 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps, onNodeClick }) => {
   useLayoutEffect(() => {
     toNodesAndEdges(steps, nodeWidth, nodeHeight).then((g) => {
       updateGraph(g);
-      console.log(g);
     });
   }, [steps, nodeWidth, nodeHeight]);
   return (
