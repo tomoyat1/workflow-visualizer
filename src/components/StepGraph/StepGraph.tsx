@@ -181,7 +181,7 @@ const toNodesAndEdges = async (
 };
 
 const StepGraph: React.FC<StepGraphProps> = ({ steps, onNodeClick }) => {
-  const [nodeWidth, nodeHeight] = [210, 105];
+  const [nodeWidth, nodeHeight] = [210, 143];
   const [graph, updateGraph] = useState<Graph>({
     links: [],
     nodes: [],

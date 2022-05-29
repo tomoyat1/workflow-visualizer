@@ -4,9 +4,17 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Card } from "@mui/material";
-
-import Box from "@mui/material/Box";
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export interface StepNodeProps {
   name: string;
@@ -34,31 +42,32 @@ const StepNode: React.FC<StepNodeProps> = ({ name, type, onNodeClick }) => {
           width: 200,
           ml: "5px",
           mt: "5px",
-          ":hover": {
-            cursor: "pointer",
-          },
         }}
         ref={cardEl}
-        onClick={onClick}
         variant="outlined"
       >
-        <Box
-          sx={{
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: { xs: "center", md: "flex-start" },
-          }}
-        >
-          <Box
+        <CardActionArea>
+          <CardContent
+            onClick={onClick}
             sx={{
-              fontSize: "h6.fontSize",
+              ":hover": {
+                cursor: "pointer",
+              },
             }}
           >
-            {name}
-          </Box>
-          <Box sx={{ typography: "subtitle1" }}>{type}</Box>
-        </Box>
+            <Typography variant="h6" component="div">
+              {name}
+            </Typography>
+            <Typography variant="subtitle1" component="div">
+              {type}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions onClick={(e) => e.stopPropagation()}>
+          <IconButton size="medium">
+            <DeleteIcon fontSize="inherit" />
+          </IconButton>
+        </CardActions>
       </Card>
     </foreignObject>
   );
