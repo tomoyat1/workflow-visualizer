@@ -20,9 +20,15 @@ export interface StepNodeProps {
   name: string;
   type: string;
   onNodeClick: (name: string) => void;
+  onDeleteClick: (name: string) => void;
 }
 
-const StepNode: React.FC<StepNodeProps> = ({ name, type, onNodeClick }) => {
+const StepNode: React.FC<StepNodeProps> = ({
+  name,
+  type,
+  onNodeClick,
+  onDeleteClick,
+}) => {
   const [[cardWidth, cardHeight], updateCardSize] = useState([0, 0]);
   const cardEl = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -64,7 +70,12 @@ const StepNode: React.FC<StepNodeProps> = ({ name, type, onNodeClick }) => {
           </CardContent>
         </CardActionArea>
         <CardActions onClick={(e) => e.stopPropagation()}>
-          <IconButton size="medium">
+          <IconButton
+            size="medium"
+            onClick={(e) => {
+              onDeleteClick(name);
+            }}
+          >
             <DeleteIcon fontSize="inherit" />
           </IconButton>
         </CardActions>

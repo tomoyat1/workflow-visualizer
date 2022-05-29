@@ -73,10 +73,21 @@ const App: React.FC = () => {
   const onNodeClick = (name: string) => {
     updateSelectedStep(name);
   };
+  const onDeleteClick = (name: string) => {
+    const { [name]: foo, ...rest } = steps;
+    updateSteps(rest);
+    if (selectedStep === name) {
+      updateSelectedStep("");
+    }
+  };
 
   const graphComponent = () =>
     !invalid ? (
-      <StepGraph steps={steps} onNodeClick={onNodeClick} />
+      <StepGraph
+        steps={steps}
+        onNodeClick={onNodeClick}
+        onDeleteClick={onDeleteClick}
+      />
     ) : (
       <Alert severity="error" sx={{ m: 1 }}>{`Invalid YAML: ${JSON.stringify(
         parseError?.issues

@@ -39,6 +39,7 @@ export interface Steps {
 export interface StepGraphProps {
   steps: Steps;
   onNodeClick: (name: string) => void;
+  onDeleteClick: (name: string) => void;
 }
 
 interface Detail {
@@ -180,7 +181,11 @@ const toNodesAndEdges = async (
   } as Graph;
 };
 
-const StepGraph: React.FC<StepGraphProps> = ({ steps, onNodeClick }) => {
+const StepGraph: React.FC<StepGraphProps> = ({
+  steps,
+  onNodeClick,
+  onDeleteClick,
+}) => {
   const [nodeWidth, nodeHeight] = [210, 143];
   const [graph, updateGraph] = useState<Graph>({
     links: [],
@@ -216,6 +221,7 @@ const StepGraph: React.FC<StepGraphProps> = ({ steps, onNodeClick }) => {
           nodeComponent={(c) => (
             <StepNode
               onNodeClick={onNodeClick}
+              onDeleteClick={onDeleteClick}
               name={c.node.id}
               type={graph.details[c.node.id].type}
             />
