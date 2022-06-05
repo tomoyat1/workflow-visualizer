@@ -144,11 +144,20 @@ const removeShortEdges = (steps: Steps): Steps => {
   return result;
 };
 
+const sanitize = (steps: Steps): Steps => {
+  const results = _.cloneDeep(steps);
+  for (let s in results) {
+    results[s].after = results[s].after.filter((a) => a in steps && a !== s);
+  }
+  return results;
+};
+
 const toNodesAndEdges = async (
   steps: Steps,
   nodeWidth: number,
   nodeHeight: number
 ): Promise<Graph> => {
+  steps = sanitize(steps);
   steps = removeShortEdges(steps);
   const tmpNode = {
     id: "root",
